@@ -1,0 +1,211 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  SECTIONHEAD
+  HCLERK
+  CLERK
+}
+
+enum RequestType {
+  MAINTANANCE
+  SUPPORT
+  RESTOCK
+}
+
+enum Status {
+  PENDING
+  DISPATCHED
+}
+
+enum Priority {
+  HIGH
+  LOW
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String
+  role          Role      @default(CLERK)
+  phonenumber   String    @unique
+  accounts      Account[]
+  sessions      Session[]
+  authenticators Authenticator[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  supplies      Supply[]
+  requisitions  Requisition[]
+  logs          Log[]
+  office        Office[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+model Supplier {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  phonenumber String
+  city        String
+  address     String
+  email       String  @unique
+  manager     String
+  supplies    Supply[]
+}
+
+model Supply {
+  id          String   @id @default(cuid())
+  status      Status   @default(PENDING)
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id])
+  supplierId  String
+  authorId    String
+  supplycode  String   @default(cuid())
+  supplyItems SupplyItem[]
+}
+
+model SupplyItem {
+  id  Int @id @default(autoincrement())
+  name        String
+  quantity    Int
+  unit        String
+  category    String
+  description String
+  supply      Supply  @relation(fields: [supplyId], references: [id])
+  supplyId    String
+  itemCode    String  @default(cuid())
+  requisitions Requisition[]
+  logs         Log[]
+  serial       Serial?
+  request     Request[]
+}
+
+model Item {
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  unit         String
+  description  String
+  category     String
+}
+
+model Office {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  location    String
+  manager     String
+  phonenumber String
+  clerk       User   @relation(fields: [clerkId], references: [id])
+  clerkId     String
+  request    Request[]
+}
+
+model Requisition {
+  id                Int      @id @default(autoincrement())
+  description       String
+  status            Status   @default(PENDING)
+  remarks           String
+  createdAt         DateTime @default(now())
+  quantityIssued    Int
+  quantityRequested Int?
+  author            User     @relation(fields: [authorId], references: [id])
+  authorId          String
+  item              SupplyItem     @relation(fields: [itemId], references: [id])
+  itemId            Int
+}
+
+model Log {
+  id          Int      @id @default(autoincrement())
+  action      String
+  createdAt   DateTime @default(now())
+  description String
+  item        SupplyItem     @relation(fields: [itemId], references: [id])
+  itemId      Int
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+}
+
+model Serial {
+  id            String   @id @default(cuid())
+  serialnumber  String   @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime? @default(now())
+  status        Status   @default(PENDING)
+  item          SupplyItem  @relation(fields: [itemId], references: [id])
+  itemId        Int      @unique
+}
+
+model Request {
+  id               Int        @id @default(autoincrement())
+  quantityRequired Int
+  createdAt        DateTime   @default(now())
+  request          RequestType @default(RESTOCK)
+  priority         Priority    @default(LOW)
+  status           Status      @default(PENDING)
+  remarks          String
+  itemId           Int
+  officeId         Int
+  item             SupplyItem  @relation(fields: [itemId], references: [id])
+  office           Office   @relation(fields: [officeId], references: [id])
+}
