@@ -1,9 +1,8 @@
 import SkeletonAppBar from "@/components/skeletonCard";
+import SkeletonDashboard from "@/components/skeletonDashboard";
 
  export default function loading() {
     return (
-        <div className="flex justify-center items-center h-screen ml-[230px]">
-                <SkeletonAppBar  />
-        </div>
+                <SkeletonDashboard  />
     )
 }

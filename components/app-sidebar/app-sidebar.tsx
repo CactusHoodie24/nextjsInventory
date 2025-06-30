@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SearchForm } from "./search-form"
+import { SearchForm } from "../search-form"
 import { useSession } from "next-auth/react"
 import { CldImage } from 'next-cloudinary';
 import { toast } from "sonner"
@@ -36,8 +36,8 @@ import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import clsx from "clsx"
 import Link from "next/link"
-import  AppSidebarSkeleton  from "./skeletonSideBar"
-import { SignOut } from "./auth/signout-button"
+import  AppSidebarSkeleton  from "../skeletonSideBar"
+import { SignOut } from "../auth/signout-button"
 
 const data = {
   versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"]
@@ -47,7 +47,7 @@ const items = [
   { title: "Home", url: "/dashboard", icon: Home },
   { title: "Delivery Note", url: "/dashboard/deliverynote", icon: Inbox },
   { title: "Requisition", url: "/dashboard/requisition", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
+  { title: "History", url: "#", icon: Search },
   { title: "Settings", url: "#", icon: Settings },
 ]
 
@@ -74,7 +74,7 @@ export function AppSidebar({ isLoggedIn }: AppSidebarProps) {
 
 
   return (
-      <Sidebar className={isLoggedIn ? 'hidden md:flex' : 'hidden'}> 
+      <Sidebar className={isLoggedIn ? 'hidden md:flex rounded-2xl ml-1.5 m-1.5 shadow-2xl border border-border' : 'hidden'}> 
       <SidebarHeader>
         <VersionSwitcher
           versions={data.versions}
@@ -93,7 +93,7 @@ export function AppSidebar({ isLoggedIn }: AppSidebarProps) {
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
                       <item.icon />
-                      <span className={clsx('text-cyan-500', pathname === item.url && 'text-red-600')}>
+                      <span className={clsx('text-black', pathname === item.url && 'text-cyan-500')}>
                         {item.title}
                       </span>
                     </Link>

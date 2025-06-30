@@ -54,6 +54,12 @@ export const deliverNoteSchema = z.object({
     .min(5, { message: 'Should exceed five characters' }),
 })
 
+export const requisitionSchema = z.object({
+   description: z.string().min(5, {message: 'Must be more than 5 characters'}),
+   remarks: z.string().min(5, {message: 'Must be more than 5 characters'}),
+   quantityIssued: z.number().min(5, {message: 'Must be not be a zero'})
+})
+
 // Type inference for TypeScript
 export type SignUpFormData = typeof signUpSchema._type
 export type LoginFormData = typeof loginSchema._type

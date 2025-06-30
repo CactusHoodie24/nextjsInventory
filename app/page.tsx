@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar/app-sidebar";
 import RegisterComponent from "@/components/login";
 import TabsDemo from "@/components/register";
 import { prisma } from "@/prisma";
@@ -10,12 +10,12 @@ export default async function Home() {
   const isLoggedIn = !!session;
 
   return (
-    <>
+    <div className="bg-green-300">
       {isLoggedIn && <AppSidebar isLoggedIn={true} />}
       <div className="flex justify-center items-center h-screen ml-[500px]">
       {!isLoggedIn && <RegisterComponent />}
       </div>
-    </>
+    </div>
   );
 }
 

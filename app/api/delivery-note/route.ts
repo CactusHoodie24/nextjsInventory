@@ -20,7 +20,7 @@ if (!user) {
   return NextResponse.json({ message: "User not found" }, { status: 404 });
 }
 
-await prisma.supply.create({
+const supply = await prisma.supply.create({
   data: {
     supplierId,
     status: 'DISPATCHED',
@@ -41,6 +41,17 @@ await prisma.supply.create({
     supplyItems: true,
   },
 });
+
+const items = supply.supplyItems[0]
+
+await prisma.log.create({
+  data: {
+    action: 'Performed a Delivery Note',
+    description: 'Added a New stock',
+    itemId: items.id,
+    authorId: user.id
+  }
+})
 
         return NextResponse.json({message: `Created a new Row of supplies`}, {status: 200})
     } catch (error) {

@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 import { Skeleton } from './ui/skeleton';
 export default function SkeletonAppBar() {
     return (
-        <div>
+        <div className='ml-[230px] mt-[100px]'>
              <Card className="w-[900px] max-w-sm">
       <CardHeader  className='flex-row gap-4 items-center'>
        <Skeleton className='w-12 h-12 rounded-full' />
