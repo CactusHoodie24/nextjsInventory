@@ -7,6 +7,7 @@ import {
   Search,
   Settings,
   ChevronUp,
+  Mail
 } from "lucide-react"
 
 import {
@@ -47,6 +48,7 @@ const items = [
   { title: "Home", url: "/dashboard", icon: Home },
   { title: "Delivery Note", url: "/dashboard/deliverynote", icon: Inbox },
   { title: "Requisition", url: "/dashboard/requisition", icon: Calendar },
+  { title: "Request", url: "/dashboard/request", icon: Mail},
   { title: "History", url: "#", icon: Search },
   { title: "Settings", url: "#", icon: Settings },
 ]

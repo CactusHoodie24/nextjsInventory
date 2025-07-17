@@ -1,7 +1,4 @@
-import { auth } from "@/lib/auth";
-import ClientProfile from "./ClientProfile";
-import { AppSidebar } from "@/components/app-sidebar/app-sidebar";
-import Headers from './headers'
+import Headers from "./headers";
 import ChartComponent from "@/components/chart-bar-multiple";
 import {
   Card,
@@ -11,38 +8,66 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { getMostUsedItem } from "@/lib/MostUsedItem";
+import { MostRequisitions } from "@/lib/OfficeWithMost";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { outofStock } from "@/lib/OutofStocl";
+import { fulfillmentRate, pendingRequest } from "@/lib/fulfillment";
+import { getChartData } from "@/lib/chartData";
 
 export default async function Dashboard() {
-  const session = await auth();
-   // ⏳ Simulate network delay (e.g., 2 seconds)
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const item = await getMostUsedItem()
+  const suppliers = await MostRequisitions()
+  const stock = await outofStock()
+  const rate = await fulfillmentRate()
+  const Pending = await pendingRequest()
+  const itemName = item?.findName?.name;
+const quantity = item?.quantityUsed?.quantityIssued;
+const supplierName = suppliers?.officeName?.name
+const amount = suppliers?.quantityIssued.quantityIssued
+const stockItem = stock?.name 
+const pendingArray = Pending
+const chartData = await getChartData()
+
   return (
     <div className="ml-[20px] mt-5">
       <div className="flex gap-1.5">
- <Headers />
- <Headers />
- <Headers />
- <Headers />
- </div>
- <div className="flex mt-3.5">
-  <Card className="w-[600px]">
-  <ChartComponent />
-  </Card>
-<Card className="ml-1.5 w-[370px]">
-  <CardHeader>
-    <CardTitle>Card Title</CardTitle>
-    <CardDescription>Card Description</CardDescription>
-    <CardAction>Card Action</CardAction>
-  </CardHeader>
-  <CardContent>
-    <p>Card Content</p>
-  </CardContent>
-  <CardFooter>
-    <p>Card Footer</p>
-  </CardFooter>
-</Card>
- </div>
+      <Headers itemName={itemName} quantity={quantity} title="Most Used Item" />
+<Headers supplierName={supplierName} amount={amount} title="Most Requisitions" />
+<Headers rate={rate.rate} title="Fulfilment Rate" />
+<Headers itemName={stockItem} amount={stock?.quantity} title="Out Of Stock" />
+      </div>
+      <div className="flex mt-3.5">
+        <Card className="w-[600px]">
+          <ChartComponent chartData={chartData} />
+        </Card>
+        <Card className="ml-1.5 w-[370px]">
+          <CardHeader>
+            <CardTitle>Pending Requests</CardTitle>
+            <CardDescription>Card Description</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible>
+               {pendingArray?.map(item => (
+       <AccordionItem key={item.id} value={item.status}>
+    <AccordionTrigger>{item.officeName}</AccordionTrigger>
+    <AccordionContent className="flex gap-1.5">
+      <p>Date: {item.createdAt.toLocaleString()}</p>
+      <p>Item: {item.item.name}</p>
+      <p>Quantity: {item.quantityRequired}</p>
+    </AccordionContent>
+  </AccordionItem>
+     ))}
+</Accordion>
+          </CardContent>
+        </Card>
+      </div>
     </div>
-  )
+  );
 }

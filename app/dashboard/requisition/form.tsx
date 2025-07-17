@@ -28,9 +28,19 @@ type item = {
   totalQuantity: number;
 }
 
+type office = {
+   id: number;
+    name: string;
+    phonenumber: string;
+    location: string;
+    manager: string;
+    clerkId: string;
+}
+
 interface Application {
   info: thing[],
-  items: item[]
+  items: item[],
+  offices: office[]
 }
 
 const initialState = {
@@ -44,13 +54,15 @@ const initialState = {
 }
 
 
-const FormRequisition = ({ info, items }: Application) => {
+const FormRequisition = ({ info, items, offices }: Application) => {
   const pathname = usePathname()
   const [state, action, isPending] = useActionState(saveRequisition, initialState)
   const [selectedName, setSelectedName] = useState('')
   const [quantityIssued, setQuantityIssued] = useState<string>('')
   const [availableStock, setAvailableStock] = useState<number>(0)
   const [selectedItemId, setSelectedItemId] = useState<string>('');
+  const [selectedOfficeId, setSelectedOfficeId] = useState<string>('')
+  const [office_id, setOffice_id] = useState<string>('')
 
 useEffect(() => {
   if (pathname?.includes('/dashboard/requisition') && info.length > 0) {
@@ -75,6 +87,14 @@ const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setQuantityIssued(quantity.toString());
   setAvailableStock(quantity);
 };
+
+const handleChange2 = (e: React.ChangeEvent<HTMLSelectElement>) => {
+     const officeId = e.target.value
+    setSelectedOfficeId(officeId)
+    const match = offices.find(office => office.id.toString() === officeId)
+    const office = match?.id ?? 0;
+    setOffice_id(office.toString())
+}
 
 
 function handleQuantityChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -125,6 +145,15 @@ function handleQuantityChange(e: React.ChangeEvent<HTMLInputElement>) {
       {item.name}
     </option>
   ))}
+</select>
+    {state?.errors?.quantityIssued && <h2 className="text-red-500">{state.errors.quantityIssued}</h2>}
+    </div>
+      <div>
+      <Label htmlFor="item">Office</Label>
+    <select id="office" name="office_id" value={selectedOfficeId} onChange={handleChange2}>
+  <option value="">Select Option</option>
+  {offices.map(office => <option key={office.id} value={office.id}>{office.name}</option>)
+  }
 </select>
     {state?.errors?.quantityIssued && <h2 className="text-red-500">{state.errors.quantityIssued}</h2>}
     </div>

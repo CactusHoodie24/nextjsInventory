@@ -1,38 +1,35 @@
-"use client"
+"use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
+import React from "react";
+import { BarChart, Bar, CartesianGrid, XAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+type ChartDatum = {
+  month: string;
+  requisition: number;
+  supply: number;
+};
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Requisition",
     color: "#2563eb",
   },
   mobile: {
-    label: "Mobile",
+    label: "Supply",
     color: "#60a5fa",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export default function ChartComponent() {
+export default function ChartComponent({ chartData }: { chartData: ChartDatum[] }) {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
+      <BarChart data={chartData}>
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="month"
@@ -42,9 +39,9 @@ export default function ChartComponent() {
           tickFormatter={(value) => value.slice(0, 3)}
         />
         <ChartTooltip content={<ChartTooltipContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="requisition" fill="var(--color-desktop)" radius={4} />
+        <Bar dataKey="supply" fill="var(--color-mobile)" radius={4} />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }

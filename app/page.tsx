@@ -10,7 +10,7 @@ export default async function Home() {
   const isLoggedIn = !!session;
 
   return (
-    <div className="bg-green-300">
+    <div>
       {isLoggedIn && <AppSidebar isLoggedIn={true} />}
       <div className="flex justify-center items-center h-screen ml-[500px]">
       {!isLoggedIn && <RegisterComponent />}

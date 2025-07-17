@@ -11,6 +11,8 @@ export async function saveRequisition(prevState: any, formData: FormData) {
     const quantityIssued = Number(quantityIssuedStr);
     const itemIdStr = formData.get("itemId") as string;
     const itemId = Number(itemIdStr);
+    const officeIdStr = formData.get('office_id') as string
+    const officeId = Number(officeIdStr)
 
     const session = await auth();
     if (!session?.user?.email) {
@@ -39,7 +41,8 @@ export async function saveRequisition(prevState: any, formData: FormData) {
         description,
         remarks,
         quantityIssued,
-        itemId
+        itemId,
+        officeId
     });
 
     if (!result.success) {
@@ -76,7 +79,8 @@ export async function saveRequisition(prevState: any, formData: FormData) {
                 quantityIssued,
                 status: "DISPATCHED",
                 authorId: user.id,
-                itemId
+                itemId,
+                officeId
             }
         });
 

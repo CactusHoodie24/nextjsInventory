@@ -44,16 +44,20 @@ async function getItems() {
   return Object.values(grouped); // now includes id
 }
 
+async function getOffices() {
+  return await prisma.office.findMany()
+}
 
 
 const Requisition = async () => {
     const info = await getInformation();
     const items = await getItems();
+    const offices = await getOffices();
     console.log(info)
     const session = await auth();
   return (
     <div className='flex ml-[230px] mt-[100px]'>
-     <FormRequisition info={info} items={items} />
+     <FormRequisition info={info} items={items} offices={offices} />
      </div>
   )
 }

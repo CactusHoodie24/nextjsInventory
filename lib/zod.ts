@@ -1,6 +1,6 @@
 import { Description } from "@radix-ui/react-dialog"
 import { object, string, z } from "zod"
- 
+import { Priority, RequestType } from "@prisma/client"
 export const loginSchema = object({
   email: string({ required_error: "Email is required" })
     .min(1, "Email is required")
@@ -60,7 +60,27 @@ export const requisitionSchema = z.object({
    quantityIssued: z.number().min(5, {message: 'Must be not be a zero'})
 })
 
+// Convert the enums to arrays of strings
+const priorityEnumValues = Object.values(Priority) as [string, ...string[]]
+const requestTypeEnumValues = Object.values(RequestType) as [string, ...string[]]
+
+
+// Now create your Zod schema
+export const requestSchema = z.object({
+  request: z.enum(requestTypeEnumValues, {
+    errorMap: () => ({ message: "Invalid request type" }),
+  }),
+  priority: z.enum(priorityEnumValues, {
+    errorMap: () => ({ message: "Invalid priority level" }),
+  }),
+  remarks: z.string().min(5, { message: 'Must be more than 5 characters' }),
+  quantity: z.coerce.number().min(1, { message: "Quantity must be at least 1" }),
+  item_id: z.coerce.number().min(1, { message: "Item ID must be valid" })
+})
+
+
 // Type inference for TypeScript
 export type SignUpFormData = typeof signUpSchema._type
 export type LoginFormData = typeof loginSchema._type
 export type deliverNoteFormData = typeof deliverNoteSchema._type
+export type RequestFormData = z.infer<typeof requestSchema>
