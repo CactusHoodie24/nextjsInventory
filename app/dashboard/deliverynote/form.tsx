@@ -114,7 +114,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     description: `Details ${details.name} ${details.quantity}!`,
     duration: 5000,
   });
-  setProgress(66)
+  setProgress(100)
   setSucces(true);
   setIsPending(false);
   // Optional: reset form
@@ -151,10 +151,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       <div className='mb-10'>    
         <Progress value={progress} />
         <div className='flex gap-32 mb-2.5'>
-         <div className='w-[32px] h-[32px] rounded-full bg-transparent border-2 pt-1 pl-2.5 mt-2'>1</div>
+         <div className={clsx('w-[32px] h-[32px] rounded-full bg-transparent border-2 pt-1 pl-2.5 mt-2', progress === 100 ? 'bg-green-600' : 'bg-transparent')}>1</div>
          <div className={clsx(
-  'w-[32px] h-[32px] rounded-full border-2 pt-1 pl-2.5 mt-2',
-  progress === 66 ? 'bg-green-600' : 'bg-transparent'
+  'w-[32px] h-[32px] rounded-full border-2 pt-1 pl-2.5 mt-2 ml-[160px]',
+  progress === 100 ? 'bg-green-600' : 'bg-transparent'
 )}>2</div>
         </div>
             <Card className="w-[900px] max-w-sm">
@@ -163,9 +163,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         <CardDescription>
           Enter the appropriate information
         </CardDescription>
-        <CardAction>
-          <Button variant="link">Sign Up</Button>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmmit}>

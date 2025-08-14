@@ -12,7 +12,7 @@ export default async function Home() {
   return (
     <div>
       {isLoggedIn && <AppSidebar isLoggedIn={true} />}
-      <div className="flex justify-center items-center h-screen ml-[500px]">
+      <div className="flex justify-center items-center h-screen ml-[45px] sm:ml-[500px]">
       {!isLoggedIn && <RegisterComponent />}
       </div>
     </div>

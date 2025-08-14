@@ -23,7 +23,7 @@ export default function RegisterComponent() {
     }
   }, [state.success, router])
  return (
-   <Card className="w-full max-w-md">
+   <Card className="w-full">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Enter your credentials to access your account</CardDescription>
